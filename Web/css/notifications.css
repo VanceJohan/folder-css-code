@@ -1,0 +1,12 @@
+body{margin:0px; padding:0px;}
+
+/*Comments box*/
+.notification{border-bottom:1px solid #cccccc; border-top:1px solid #f5f5f5; font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif; font-size:12px; color:#666666;position:relative; padding:10px 15px 10px 55px; }
+.notification:hover{ background:#f3f6f9;/* background:url(../img/arrow.png) 97% 50% no-repeat;*/}
+.notification a{color:#1881B7; cursor:pointer;  text-decoration:none;}
+.notification a:hover{ text-decoration:underline; color:#005E8F;}
+.notification span{margin-right:5px;}
+.notification > img:first-child{ position:absolute; left:10px; top:15px; }
+.notification p{margin:8px 0 0 0}
+.notification .notification-text{margin-top:0px;font-size:12px; font-weight:bold;}
+.notification .notification-time{ color:#999999; font-size:11px;}

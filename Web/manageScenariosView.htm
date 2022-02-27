@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <title>Manage Scenarios View</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+            <link rel="Stylesheet" href="css/jquery-ui-timepicker-addon.css" >
+            <link rel="Stylesheet" href="css/SimulationParameters.css" type="text/css" >
+
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.standalone.css" type="text/css" >
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.themeroller.css" type="text/css" >
+        </head>
+    <body>
+        <div class="loading"></div>
+        <div id="mainDiv">
+            
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-scenario-scenariosContainer-Template'  }">Manage Scenarios View</div>
+        </div>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+             if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <!-- knockout -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.min.js" type="text/javascript"></script>
+        
+        <!-- jquery.class / plugins / widgets -->
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.widgets.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.class.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- knockout core simulation -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- jquery on ready -->
+        <script src="js/bizagi/dist/core.by.page/jquery.common.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.by.page/jquery.manage.scenarios.view.min.js" type="text/javascript"></script>
+<script id="bizagi-pm-bpsim-scenario-scenarioEditor-Template" type="text/x-jquery-tmpl">
+    <div class="biz-ui-attributes-container">         
+        <div class="biz-ui-scenarios-table">
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: nameText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: nameHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">
+                    <input class="biz-ui-input-text-large" type="text" data-bind="value: name, valueUpdate: 'afterkeydown'" >
+                    </input>                   
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: descriptionText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: descriptionHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">
+                    <textarea class="biz-ui-input-text-large" type="text" data-bind="value: description, valueUpdate: 'afterkeydown'" rows="4"></textarea>                
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: authorText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: authorHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">
+                    <input class="biz-ui-input-text-large" type="text" data-bind="value: author, valueUpdate: 'afterkeydown'" >
+                    </input>                   
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: versionText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: versionHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">
+                    <input class="biz-ui-input-text-large" type="text" data-bind="value: version, valueUpdate: 'afterkeydown'" >
+                    </input>                   
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: startText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: startHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">
+                    <input class="biz-ui-input-text-calendar biz-ui-input-text-large" value="" type="text" data-bind="value: selectedStartDate, valueUpdate: 'afterkeydown', enterkey:{}, calendarDatePicker: {}" />
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row biz-ui-scenario-duration-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: durationText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: durationHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">    
+                    <div data-bind="template: { name: 'bizagi-pm-bpsim-values-durationValueEditor-Template', data: durationValueEditorViewModel }"></div>   
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: baseTimeUnitText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: baseTimeUnitHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline biz-ui-select-large">
+                    <select class="biz-ui-select" data-bind="options: baseTimeUnitList, optionsText: 'name', optionsValue: 'id', value: baseTimeUnit, renderSelect: {}"></select>
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: baseCurrencyUnitText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: baseCurrencyUnitHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline biz-ui-select-large">
+                    <select class="biz-ui-select" data-bind="options: baseCurrencyUnitList, optionsText: 'name', optionsValue: 'id', value: baseCurrencyUnit, renderSelect: {}"></select>
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: replicationText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: replicationHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">
+                    <input class="biz-ui-input-text-large" type="text" data-bind="value: replication, valueUpdate: 'afterkeydown'" >
+                    </input>                   
+                </div>
+            </div>
+            <div class="biz-ui-scenarios-row">
+                <div class="biz-ui-scenario-left-cell biz-ui-label  biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: seedText'></span>
+                    <i class="biz-ui-icon-help" data-bind="attr: {title: seedHelpText }"></i>
+                </div>
+                <div class="scenario-right-cell  biz-ui-inline">
+                    <input class="biz-ui-input-text-large" type="text" data-bind="value: seed, valueUpdate: 'afterkeydown'" >
+                    </input>                   
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="bizagi-pm-bpsim-values-durationValueEditor-Template" type="text/x-jquery-tmpl">
+		<div>
+            <div class="biz-ui-collection-inputs biz-ui-duration">
+            	<div class="biz-ui-collection">
+            		<input type="text" size="1" maxlength="3" data-bind="value: days, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" /><input type="text" size="1" maxlength="2" data-bind="value: hours, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" /><input type="text" size="1" maxlength="2" data-bind="value: minutes, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" /><input type="text" size="1" maxlength="2" data-bind="value: seconds, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" />
+            	</div>
+            	<div class="biz-ui-collection biz-ui-absolute">
+            		<span class="biz-ui-sub-label" data-bind="text: daysText"></span><span class="biz-ui-sub-label" data-bind="text: hoursText"></span><span class="biz-ui-sub-label" data-bind="text: minutesText"></span><span class="biz-ui-sub-label" data-bind="text: secondsText"></span>
+            	</div>
+            </div>
+        </div>
+</script>
+<script id="bizagi-pm-bpsim-scenario-scenariosSelectionList-Template"  type="text/x-jquery-tmpl">
+    <div>
+        <ol id="selectable" data-bind="foreach: scenarios">
+            <li class="ui-widget-content properties-texts" data-bind="attr: { id: $data.id }, clickBinding: {}">
+            	<i class="biz-ui-icon-level-scenario"></i>
+            	<span class="biz-ui-label-text" data-bind="text: name"></span>
+            </li>
+        </ol>
+    </div>
+</script>
+ <script id="bizagi-pm-bpsim-scenario-scenariosContainer-Template"  type="text/x-jquery-tmpl">
+   
+    <div class="cf scenarios-wrapper">
+        <div class="biz-ui-selectable-item-container biz-ui-fl">
+            <div class="biz-ui-selectableitemcontainer">
+                <!-- ko if: scenarios().length != 0 -->
+                    <div data-bind="template: { name: 'bizagi-pm-bpsim-scenario-scenariosSelectionList-Template', data: scenariosListViewModel ,afterRender: contextMenuAction}" class="biz-ui-calendarsSelectionList"></div>
+                <!-- /ko -->
+            </div>
+                       
+        </div>      
+        <div class="biz-ui-scenariosValueEditorContainer">
+            <!-- ko if: scenarios().length != 0 -->
+             <div data-bind="template: { name: 'bizagi-pm-bpsim-scenario-scenarioEditor-Template', data: selectedScenarioViewModel}" class="biz-ui-scenariosValueEditor"></div>
+             <!-- /ko -->
+        </div> 
+        <div class="biz-ui-button-container biz-ui-clear">
+
+                <div class="biz-ui-split-button-container"  data-bind='splitButtonAction:{}'>
+                    <a href="#" class="biz-ui-button">
+                        <i class="biz-ui-icon-addscenario"></i>
+                        <span class="biz-ui-label-text" data-bind="text: newScenarioContainer"></span>
+                        <span class="biz-ui-split-button-section"><i class="biz-ui-icon-arrow"></i></span>
+                    </a>
+                    <div class="biz-ui-split-button-dropdown">
+                        <a href="#" class="biz-ui-button" data-bind='setAddClickEvent:{}'>
+                            <i class="biz-ui-icon-addscenario"></i>
+                            <span class="biz-ui-label-text" data-bind="text: newScenario"></span>
+                        </a>
+                        <a href="#" class="biz-ui-button" data-bind='click: copyScenarioEvent'>
+                            <i class="biz-ui-icon-copyscenario"></i>
+                            <span class="biz-ui-label-text" data-bind="text: copyScenario"></span>
+                        </a>
+                    </div>
+                </div>
+
+                
+                <div class="biz-ui-contextmenu-button-container">
+                    <a href="#" class="biz-ui-button" data-bind='click: exportScenarioEvent'>
+                        <i class="biz-ui-icon-exportscenario"></i>
+                        <span class="biz-ui-label-text" data-bind="text: exportScenario"></span>
+                    </a>
+                </div>
+
+                <a href="#" class="biz-ui-link" data-bind='click: removeScenarioEvent, text: deleteScenario'></a> 
+            </div>                 
+    </div>
+    
+</script>
+ <script id="bizagi-pm-bpsim-common-dateTimeControl-Template"  type="text/x-jquery-tmpl">
+        <input class="biz-ui-input-text" type="text" readonly="readonly" data-bind="value: selectedDateTime, dateTimeSetControl: {}" />
+</script>
+    </body>
+</html>

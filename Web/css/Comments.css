@@ -1,0 +1,287 @@
+﻿body
+{
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 9pt;
+	background-color: #FFF;
+}
+
+h2
+{
+    margin: 0;
+    padding: 10px 0;
+    display: block;
+    background-color: #dee1e6;
+    color: #007ac3;
+    text-align: center;
+	display: none;
+	font-size: 10pt;
+}
+
+h2:hover
+{
+	cursor: pointer;
+}
+
+
+#comment-list, #comment-list ul.reply-list
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#comment-list > li
+{
+	position: relative;
+	padding: 0 0 5px 55px;
+	background: #FFF url('img/gradient2.gif') repeat-x;
+}
+
+#comment-list > li:hover
+{	
+	background: #dee1e6 url('img/gradient1.gif') repeat-x;
+}
+
+#comment-list > li > a.user-pic
+{	
+	position: absolute;
+	height: 32px;
+	width: 32px;
+	top: 10px;
+	left: 10px;
+	border: 1px solid #CCC;
+}
+
+#comment-list > li > a.user-pic:hover
+{
+	cursor: pointer;
+}
+
+#comment-list > li > a > img {border: 0;}
+
+#comment-list > li > .comment-frame
+{
+	margin-top: -8px;	
+}
+
+#comment-list li .comment-frame .user-display-name
+{
+	display: block;
+	font-size: 10pt;
+	font-weight: bold;
+	color: #555;
+	cursor: pointer;
+    width: 90%;
+}
+
+.button-refresh {
+    margin:15px 10px 0 0;
+}
+
+#comment-list li .comment-frame a.user-display-name:hover 
+{
+	text-decoration: underline;
+	color:#005E8F;
+}
+
+#comment-list li .comment-frame .comment-link
+{
+	color: #005E8F;
+	text-decoration: none;
+}
+
+#comment-list li .comment-frame .comment-text
+{
+	margin: 0;
+	padding: 2px 0;
+}
+
+#comment-list li .comment-frame .comment-actions
+{
+	/*margin: 5px 0 5px 0;*/
+	margin: 0;
+	padding: 0 0 2px 0;	
+}
+
+#comment-list li .comment-frame .comment-actions > span
+{
+	color: #777;
+	margin-right: 3px;	
+}
+
+#comment-list li .comment-frame .comment-actions .related-element
+{
+	margin-right: 4px;
+}
+
+#comment-list li .comment-frame .comment-actions .related-element:hover
+{
+	cursor: pointer;
+}
+
+#comment-list li .comment-frame .comment-actions > input[type="button"]
+{
+	border: 1px solid #CCC;
+	background-color: #DDD;
+	color: #555;
+	font-size: 7pt;
+	font-family: arial;
+	/*padding: 2px 13px 0 0px;*/
+	cursor: pointer;
+	margin-right: 3px;
+	visibility: hidden;
+	height: 22px;
+	width: 22px;
+}
+
+#comment-list li .comment-frame .comment-actions > input[type="button"]:hover { background-color: #E5E5E5; }
+.button-reply { background: url('img/reply.png') no-repeat right }
+.button-delete { background: url('img/delete.png') no-repeat right }
+
+#comment-list .reply-list li
+{
+	margin: 0 10px 0 0;
+	padding:  2px 0;
+}
+
+ul.reply-list {	 }
+
+ul.reply-list li
+{	
+	border-top: 1px dashed #AAA;
+}
+
+.reply-toggler { color: #555; }
+
+.collapsed, .expanded
+{
+	display: block;
+	height: 17px; 
+	width: 17px;
+	background: url('img/collapsible.png') no-repeat;
+	margin-right: 5px;
+	cursor: pointer;
+	float: right;
+	margin-top: -60px;
+	margin-right: 10px;
+}
+
+.collapsed { background-position: 0 0; }
+.expanded {	background-position: -17px 0; }
+
+.reply-actions
+{	
+	margin: 0;
+	padding: 0 0 2px 0;
+}
+
+.reply-actions > span:first-child
+{
+	margin-right: 5px;
+	color: #777
+}
+
+.reply-actions input[type="button"]
+{
+	border: 1px solid #CCC;
+	background-color: #DDD;
+	color: #555;
+	font-size: 7pt;
+	font-family: arial;
+	padding: 2px 12px 0 3px;
+	cursor: pointer;
+	margin-right: 5px;
+	visibility: hidden;
+}
+
+.button-category
+{
+	display: block;
+	width: 20px;
+	height: 22px;
+	font-size: 7pt;
+	font-family: arial;
+	cursor: pointer;
+	margin-right: 5px;
+	float: right;
+	margin-top: -15px;
+	margin-right: 10px;	
+	border-style: none;
+	background-repeat:no-repeat;
+	cursor: default;
+	outline: none;
+	border-style:none;
+	border: 0;
+}
+
+.category-click:focus{
+    border : 0px;
+    outline : none; 
+}
+
+.category-click:hover
+{
+	cursor: pointer;
+}
+
+.button-filter {
+    height: 22px;
+}
+
+.button-filter:hover
+{
+	cursor: pointer;
+}
+
+.button-refresh
+{
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	border: 0px;
+	background: url('img/Refresh16.png') no-repeat right;
+	cursor: pointer;
+	float: right;
+}
+
+.button-clearCategory
+{
+	cursor: pointer;
+}
+
+.red
+{
+	background: url('categories/red_flag.png');
+}
+
+.orange
+{
+	background: url('categories/orange_flag.png') no-repeat right;
+}
+
+.disable
+{
+	background: url('categories/disable_flag.png') no-repeat right;
+}
+
+.yellow
+{
+	background: url('categories/yellow_flag.png');
+}
+
+.blue
+{
+	background: url('categories/blue_flag.png');
+}
+
+.purple
+{
+	background: url('categories/purple_flag.png');
+}
+
+.green
+{
+	background: url('categories/green_flag.png');
+}

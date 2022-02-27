@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <title>Simulatuion Results Print Preview</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+            <link rel="Stylesheet" href="css/jquery-ui-timepicker-addon.css" >
+            <link rel="Stylesheet" href="css/SimulationParameters.css" type="text/css" >
+
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.standalone.css" type="text/css" >
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.themeroller.css" type="text/css" >
+        </head>
+    <body>
+        <div class="loading"></div>
+        <div id="mainDiv">
+            
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-results-tableResultsPrintPreview-Template' , afterRender: initPrintPreview  }">Simulatuion Results Print Preview</div>
+        </div>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+             if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <!-- knockout -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.min.js" type="text/javascript"></script>
+        
+        <!-- jquery.class / plugins / widgets -->
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.widgets.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.class.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- knockout core simulation -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- jquery on ready -->
+        <script src="js/bizagi/dist/core.by.page/jquery.common.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.by.page/jquery.simulation.results.print.preview.min.js" type="text/javascript"></script>
+<script id="bizagi-pm-bpsim-results-tabsEditor-Template" type="text/x-jquery-tmpl">
+    <div class="cf biz-ui-results-tabsEditor">
+        <div class="biz-ui-results-row">
+            <div class="biz-ui-fl">
+                <div class="biz-ui-selectableitemcontainer">
+                    <!-- ko if: tables().length != 0 -->
+                        <div data-bind="template: { name: 'bizagi-pm-bpsim-results-tableSelectionList-Template', data: tableListViewModel }"></div>
+                    <!-- /ko -->                   
+                </div>
+                <div class="biz-ui-button-container">
+                    <div id="exportToExcel" class="biz-ui-button">
+                        <i class="biz-ui-icon-excel"></i>
+                        <span><!--ko text: exportToExcelText--><!--/ko--></span>
+                    </div>
+                    <div id="loadPrintPreview" class="biz-ui-button">
+                        <i class="biz-ui-icon-print"></i>
+                        <span><!--ko text: printText--><!--/ko--></span>
+                    </div>
+                </div>
+            </div>               
+            <div class="biz-ui-results-table">
+               <table class="biz-ui-scenario-data">
+                    <caption data-bind="text: $data.scenarioInfo.titleText"></caption>
+                    <tbody>
+                        <tr data-bind="if: $data.scenarioInfo.name">
+                            <th data-bind="text: $data.scenarioInfo.nameText"></th>
+                            <td data-bind="text: $data.scenarioInfo.name"></td>
+                        </tr>                
+                        <tr class="biz-ui-results-row-even" data-bind="if: $data.scenarioInfo.description">
+                            <th data-bind="text: $data.scenarioInfo.descriptionText"></th>
+                            <td data-bind="text: $data.scenarioInfo.description"></td>
+                        </tr>
+
+                        <tr data-bind="if: $data.scenarioInfo.timeUnit">
+                            <th data-bind="text: $data.scenarioInfo.timeUnitText"></th>
+                            <td data-bind="text: $data.scenarioInfo.timeUnit"></td>
+                        </tr>
+                        <tr class="biz-ui-results-row-even" data-bind="if: $data.scenarioInfo.duration">
+                            <th data-bind="text: $data.scenarioInfo.durationText"></th>
+                            <td data-bind="text: $data.scenarioInfo.duration"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr class="biz-ui-divider" />          
+                <!-- ko if: tables().length != 0 -->
+                <div data-bind="template: { name: 'bizagi-pm-bpsim-results-tableResultsEditor-Template', data: selectedTableViewModel }"></div>
+                <!-- /ko -->
+            </div>
+        </div>  
+    </div>
+</script>
+
+<script id="tab-template" type="text/html">
+    <span data-bind="text: content"></span>
+</script>
+<script id="bizagi-pm-bpsim-results-tableResultsEditor-Template" type="text/x-jquery-tmpl">
+
+    <table id="table-a" class="biz-ui-results" style="table-layout:fixed; width: 100%">
+        <thead>
+            <tr data-bind="foreach : headers">
+                <th class="biz-ui-results-header" data-bind="click: $parent.sortTable">
+                    <div class="sortColumnsDataIcon">
+                        <span data-bind="text : $data.displayName"></span>
+                        <span class="arrow " data-bind="css: { 'ascendingOrder-column': $data.ascendingOrder && $data.isSortColumn, 'descendingOrder-column': !$data.ascendingOrder && $data.isSortColumn, 'noOrder-column': !$data.isSortColumn }"></span>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+
+         <tbody  data-bind="foreach : columns ">
+            <tr data-bind="template: { name: 'bizagi-pm-bpsim-results-rowEditor-Template', data: $data.values } "></tr>                        
+        </tbody>
+
+        <!--ko if: footersLenght > 0 -->
+
+        <tfoot data-bind="foreach : footers ">
+
+            <tr data-bind="foreach : $data ">
+                <td data-bind="text : $data" ></td>
+            </tr>
+
+        </tfoot>
+
+        <!-- /ko -->
+    </table>
+</script>
+<script id="bizagi-pm-bpsim-results-rowEditor-Template" type="text/x-jquery-tmpl">
+        
+    <!-- ko foreach: $data -->
+        <td data-bind=" style: {backgroundColor: $data.cellColor }">
+            <!-- ko if: $data.bold === "false" -->
+                <div data-bind="text: $data.value, style: {color: $data.fontColor, fontWeight: '' }" ></div>
+            <!-- /ko -->
+
+            <!-- ko if: $data.bold === "true" -->
+                <div data-bind="text: $data.value, style: {color: $data.fontColor, fontWeight: 'bold' }" ></div>
+            <!-- /ko -->
+        </td>
+    <!-- /ko -->
+
+</script>
+<script id="bizagi-pm-bpsim-results-tableSelectionList-Template"  type="text/x-jquery-tmpl">
+    <ul id="selectable" data-bind="foreach: tables">
+        <li class="ui-widget-content" data-bind="attr: { id: tableTitle}, tableSelectionListClickBinding: {}">
+        	<span data-bind="text: tableTitle"></span>
+        </li>
+    </ul>
+</script>
+<script id="bizagi-pm-bpsim-results-tableResultsPrintPreview-Template" type="text/x-jquery-tmpl">
+    <div data-bind="foreach: tables">
+        <div style="page-break-after: always">
+            <h3 data-bind="text: tableTitle" style="margin: 10px 0;"></h3>
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-results-tableResultsEditor-Template', data: tableData }"></div>
+        </div>
+    </div>
+</script>
+    </body>
+</html>

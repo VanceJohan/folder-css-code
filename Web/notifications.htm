@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"  lang="|#bpm_lang#|">
+        <head>
+            <title>Notifications</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <link href="css/notifications.css" rel="stylesheet" type="text/css" />        
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+    </head>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+             if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/notifications/jquery.notifications.min.js" type="text/javascript"></script>
+<div></div>
+    </body>
+</html>

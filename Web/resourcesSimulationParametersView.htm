@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <title>Resources Simulatuion Parameters Preview</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+            <link rel="Stylesheet" href="css/jquery-ui-timepicker-addon.css" >
+            <link rel="Stylesheet" href="css/SimulationParameters.css" type="text/css" >
+
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.standalone.css" type="text/css" >
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.themeroller.css" type="text/css" >
+        </head>
+    <body>
+        <div class="loading"></div>
+        <div id="mainDiv">
+            
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-resources-resourcesContainer-Template' , afterRender: jqueryWindowsResize }">Resources Simulatuion Parameters Preview</div>
+        </div>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+             if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <!-- knockout -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.min.js" type="text/javascript"></script>
+        
+        <!-- jquery.class / plugins / widgets -->
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.widgets.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.class.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- knockout core simulation -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- jquery on ready -->
+        <script src="js/bizagi/dist/core.by.page/jquery.common.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.by.page/jquery.resources.simulation.parameters.view.min.js" type="text/javascript"></script>
+ <script id="bizagi-pm-bpsim-resources-resourcesContainer-Template"  type="text/x-jquery-tmpl">
+    <div  id="resourcesContainer" class="biz-ui-tabs-container biz-ui-resourcesContainer" data-bind='tabsCreator:{}'>
+        <ul class="biz-ui-tabs-nav">
+            <li class="biz-ui-tabs-item"><a href="#tabs-1"><!--ko text: availabilityText--><!--/ko--></a></li>
+            <li class="biz-ui-tabs-item"><a href="#tabs-2"><!--ko text: costsText--><!--/ko--></a></li>
+        </ul>
+        <div class="biz-ui-tabs-panel" id="tabs-1">
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-resources-resourcesAvailability-Template', data: resourcesAvailabilityViewModel }" class="biz-ui-tab-item"></div>
+        </div>
+        <div class="biz-ui-tabs-panel" id="tabs-2">
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-resources-resourcesCosts-Template', data: resourcesCostsViewModel  }" class="biz-ui-tab-item"></div>
+        </div>
+        <div class="biz-ui-button-container">
+            <button data-bind="attr: { title: resourcesButtonTooltip }" id="updateModelResources" class="biz-ui-button"><div class="biz-ui-icon-addresource"></div><!--ko text: resourcesButtonText--><!--/ko--></button>
+            <!-- ko if: showCalendars -->
+                <button data-bind="attr: { title: calendarsButtonTooltip }" id="showCalendars" class="biz-ui-button"><div class="biz-ui-icon-calendar"></div><!--ko text: calendarsButtonText--><!--/ko--></button>
+            <!-- /ko -->
+        </div>
+    </div>
+</script>
+ <script id="bizagi-pm-bpsim-resources-resourcesAvailability-Template"  type="text/x-jquery-tmpl">
+    <div class="biz-ui-resources-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="biz-ui-resources-table"><!--ko text: resourcesText--><!--/ko-->
+                    <div class="biz-ui-separator"></div></th>
+                    <!-- ko foreach: resourcesCalendarsDefinition -->
+                        <th class="biz-ui-resources-table"><!--ko text: $data.displayName--><!--/ko-->
+                        <div class="biz-ui-separator"></div></th>
+                    <!-- /ko -->
+                </tr>
+            <thead>
+            <tbody data-bind="foreach: resources">
+                <tr data-bind="template: { name: 'bizagi-pm-bpsim-resources-resourceAvailabilityValuesRow-Template' }"></tr>
+            </tbody>
+        </table>
+    </div>
+</script>
+ <script id="bizagi-pm-bpsim-resources-resourceAvailabilityValuesRow-Template"  type="text/x-jquery-tmpl">
+    <td data-bind="text: displayName"></td>
+    <!-- ko foreach: calendarsValues -->
+        <td data-bind=" template: { name: 'bizagi-pm-bpsim-common-integerNumberControl-Template' }"></td>
+    <!-- /ko -->
+</script>
+ <script id="bizagi-pm-bpsim-resources-resourcesCosts-Template"  type="text/x-jquery-tmpl">
+    <div class="biz-ui-resources-table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="biz-ui-resources-table"><!--ko text: resourcesText--><!--/ko-->
+                    <div class="biz-ui-separator"></div></th>
+                    <th class="biz-ui-resources-table"><!--ko text: fixedCostText--><!--/ko-->
+                    <div class="biz-ui-separator"></div></th>
+                    <th class="biz-ui-resources-table"><!--ko text: unitCostText--><!--/ko-->
+                    <div class="biz-ui-separator"></div></th>
+                </tr>
+            <thead>
+            <tbody data-bind="foreach: resources">
+                <tr data-bind="template: { name: 'bizagi-pm-bpsim-resources-resourcesCostsValuesRow-Template' }"></tr>
+            </tbody>
+        </table>
+    </div>
+</script>
+ <script id="bizagi-pm-bpsim-resources-resourcesCostsValuesRow-Template"  type="text/x-jquery-tmpl">
+    <td data-bind="text: displayName"></td>
+    <td data-bind=" template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', afterRender: setSpinner, data: fixedCostViewModel }"></td>
+    <td data-bind=" template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', afterRender: setSpinner, data: unitCostViewModel }"></td>
+</script>
+ <script id="bizagi-pm-bpsim-common-floatingNumberControl-Template"  type="text/x-jquery-tmpl">
+        <input type="text" data-bind="value: floatingNumber, attr: {separator: decimalSeparator }, floatingNumberControlJquerySpinner: {}" class="biz-ui-input-text biz-ui-number"></input>
+</script>
+<script id="bizagi-pm-bpsim-common-integerNumberControl-Template" type="text/x-jquery-tmpl">
+    <input size="8" data-bind="value: integerNumber, valueUpdate: 'afterkeydown', event: { keypress: onkeypress }, visible: isVisible, jQueryIntegerNumberControl:{plugin:'spinner', config:{min: 0}}" class="biz-ui-input-text biz-ui-number" type="text" name="numericText"></input>
+</script>
+    </body>
+</html>

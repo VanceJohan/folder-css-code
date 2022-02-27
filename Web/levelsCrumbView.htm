@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <title>Levels Crumb View</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+            <link rel="Stylesheet" href="css/jquery-ui-timepicker-addon.css" >
+            <link rel="Stylesheet" href="css/SimulationParameters.css" type="text/css" >
+
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.standalone.css" type="text/css" >
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.themeroller.css" type="text/css" >
+        </head>
+    <body>
+        <div class="loading"></div>
+        <div id="mainDiv">
+            
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-levels-levelsCrumb-Template'  }">Levels Crumb View</div>
+        </div>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+             if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <!-- knockout -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.min.js" type="text/javascript"></script>
+        
+        <!-- jquery.class / plugins / widgets -->
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.widgets.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.class.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- knockout core simulation -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- jquery on ready -->
+        <script src="js/bizagi/dist/core.by.page/jquery.common.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.by.page/jquery.levels.crumb.view.min.js" type="text/javascript"></script>
+<script id="bizagi-pm-bpsim-levels-levelsCrumb-Template" type="text/x-jquery-tmpl">
+    
+    <div class="levels-nav">
+        <ul class="levels">
+            <li class="levels-item levels-label">
+                <span class="properties-texts" data-bind='text: $data.levels.levelText'></span><i class="biz-ui-icon-help" data-bind="attr: {title: $data.levels.levelHelp }"></i>
+            </li>
+            <li class="levels-item">          
+                <a id="process-validation" data-bind="jQueryLevelsCrumb: { data: $data.levels.level1.simulationLevel }, css:{ 'biz-ui-active' : $data.levels.level1.isChecked }">
+                    <i class="biz-ui-icon-level"></i>
+                    <span data-bind="text: $data.levels.level1.displayName"></span>
+                </a>
+            </li>
+            <li class="levels-item">
+                <!-- ko if: $data.levels.level2.isEnabled -->
+                <a id="time-analysis" data-bind="jQueryLevelsCrumb: { data: $data.levels.level2.simulationLevel }, css:{ 'biz-ui-active' : $data.levels.level2.isChecked }">
+                    <i class="biz-ui-icon-level"></i>
+                    <span data-bind="text: $data.levels.level2.displayName"></span>
+                </a>
+                <!-- /ko -->
+
+                 <!-- ko if: !$data.levels.level2.isEnabled -->
+                <a id="time-analysis" class="biz-ui-disabled" data-bind="css:{ 'biz-ui-active' : $data.levels.level2.isChecked }">
+                    <i class="biz-ui-icon-level"></i>
+                    <span data-bind="text: $data.levels.level2.displayName"></span>
+                </a>
+                <!-- /ko -->
+            </li>
+            <li class="levels-item">
+                <!-- ko if: $data.levels.level3.isEnabled -->
+                <a id="resource-analysis" data-bind="jQueryLevelsCrumb: { data: $data.levels.level3.simulationLevel }, css:{ 'biz-ui-active' : $data.levels.level3.isChecked }">
+                    <i class="biz-ui-icon-level"></i>
+                    <span data-bind="text: $data.levels.level3.displayName"></span>
+                </a>
+                <!-- /ko -->
+
+                <!-- ko if: !$data.levels.level3.isEnabled -->
+                <a id="resource-analysis" class="biz-ui-disabled" data-bind="css:{ 'biz-ui-active' : $data.levels.level3.isChecked }">
+                    <i class="biz-ui-icon-level"></i>
+                    <span data-bind="text: $data.levels.level3.displayName"></span>
+                </a>
+                <!-- /ko -->
+            </li>
+            <li class="levels-item">
+                <!-- ko if: $data.levels.level4.isEnabled -->
+                <a id="calendar-analysis" data-bind="jQueryLevelsCrumb: { data: $data.levels.level4.simulationLevel }, css:{ 'biz-ui-active' : $data.levels.level4.isChecked }">
+                    <i class="biz-ui-icon-level"></i>
+                    <span data-bind="text: $data.levels.level4.displayName"></span>
+                </a>
+                <!-- /ko -->
+
+                <!-- ko if: !$data.levels.level4.isEnabled -->
+                    <a id="calendar-analysis" class="biz-ui-disabled" data-bind="css:{ 'biz-ui-active' : $data.levels.level4.isChecked }">
+                        <i class="biz-ui-icon-level"></i>
+                        <span data-bind="text: $data.levels.level4.displayName"></span>
+                    </a>
+                <!-- /ko -->
+            </li>
+        </ul>
+        <div class="levels-scenario">
+            <i class="biz-ui-icon-level-scenario"></i><span data-bind='text: $data.levels.activeScenario'></span>
+        </div>              
+    </div>
+</script>
+    </body>
+</html>

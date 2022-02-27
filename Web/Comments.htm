@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="|#bpm_lang#|">
+        <head>
+            <title>Comments</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <link rel="Stylesheet" href="css/comments.css" type="text/css" />
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+        </head>
+    <body>
+        <div class="loading"></div>
+        <span style="margin:10px 0 20px 10px">#Filter by:#</span>
+        <span style=""><input type="button" id="button-filter" class="button-filter" style="margin:10px 0 0 0; border-style: none; background-image: url('css/categories/disable_flag.png'); background-color:transparent; background-repeat: no-repeat; width: 20px "/></span>&nbsp;
+        <span id="filterName" style="background-color: #EDEDED;"><span id="filterText" style="padding: 0 10px 0 0;">Texto</span><a class="button-clearCategory" title="#Clear#" style="background-image: url('css/img/CloseWindow.png'); display: inline-block; height: 16px; width: 16px;"></a></span>
+        <span><input type="button" class="button-refresh" value="" title="#Refresh#" class="button-refresh" /></span>
+               
+               <br /><br /> 
+        
+        <h2 id="new-comments">New Comment(s) available</h2>
+        <ul id="comment-list"></ul>
+        <h2 id="load-more">Load more text</h2>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+            if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <script>
+            var texts = {
+                loadOlderString: '#load_older_string#'
+            };
+
+            user = CurrentUser;
+        </script>
+
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/comments/jquery.comments.min.js" type="text/javascript"></script>
+<script id="commentTemplate" type="x-jquery-tmpl">
+	<li id='${Id}'>				
+		<a class="user-pic"><img src='${User.picturePath}' id="${User.name}" height="32" width="32"></a>
+		<div class="comment-frame">
+			<a id="${User.name}" class="user-display-name">${User.displayName}</a>
+			
+		    {{if CategoryColor == "" }}
+		        {{if User.name == CurrentUser }}
+		            <a class="button-category disable category-click" id="${Id}"></a>
+		        {{else}}
+		            <a class="button-category disable" id="${Id}"></a>
+		        {{/if}}
+	        {{/if}}					    
+            {{if CategoryColor == "0" }}
+                {{if User.name == CurrentUser }}
+                    <a title="${Category.ResourceText}" class="button-category orange category-click" id="${Id}"></a>
+	            {{else}}
+	                <a title="${Category.ResourceText}" class="button-category orange" id="${Id}"></a>
+	            {{/if}}
+	        {{/if}}    
+            {{if CategoryColor == "1" }}
+                {{if User.name == CurrentUser }}
+                    <a title="${Category.ResourceText}" class="button-category red category-click" id="${Id}"></a>
+	            {{else}}
+	                <a title="${Category.ResourceText}" class="button-category red" id="${Id}"></a>
+	            {{/if}}
+	        {{/if}}
+            {{if CategoryColor == "2" }}
+                {{if User.name == CurrentUser }}
+                    <a title="${Category.ResourceText}" class="button-category yellow category-click" id="${Id}"></a>
+	            {{else}}
+	                <a title="${Category.ResourceText}" class="button-category yellow" id="${Id}"></a>
+	            {{/if}}
+	        {{/if}}
+            {{if CategoryColor == "3" }}
+                {{if User.name == CurrentUser }}
+                    <a title="${Category.ResourceText}" class="button-category blue category-click" id="${Id}"></a>
+	            {{else}}
+	                <a title="${Category.ResourceText}" class="button-category blue" id="${Id}"></a>
+	            {{/if}}
+	        {{/if}}
+            {{if CategoryColor == "4" }}
+                {{if User.name == CurrentUser }}
+                    <a title="${Category.ResourceText}" class="button-category purple category-click" id="${Id}"></a>
+	            {{else}}
+	                <a title="${Category.ResourceText}" class="button-category purple" id="${Id}"></a>
+	            {{/if}}
+	        {{/if}}
+            {{if CategoryColor == "5" }}
+                {{if User.name == CurrentUser }}
+                    <a title="${Category.ResourceText}" class="button-category green category-click" id="${Id}"></a>
+	            {{else}}
+	                <a title="${Category.ResourceText}" class="button-category green" id="${Id}"></a>
+	            {{/if}}
+	        {{/if}}
+                
+            <a class="comment-link" target="_blank" href="${Link}">${LinkText}</a>
+			<p class="comment-text">{{html Text}}</p>
+			<p class="comment-actions">
+				<span class="time-ago">${TimeAgo}</span>
+				{{if RelatedElementId != null }}
+					<a class="related-element" id="${RelatedElementId}" ><img border="0" src="${RelatedElementImage}" height="16" width="16" /></a>
+				{{/if}}
+				<input type="button" id="${Id}" value="" class="button-reply" />
+				{{if User.name == CurrentUser }}
+				    <input type="button" id="${Id}" value="" class="button-delete" />
+				{{/if}}
+			</p>
+			{{if Replies.length > 0}}
+				<ul class="reply-list">							
+					{{each Replies}}
+						<li>
+							<a class="user-display-name" id="${User.name}">${User.displayName}</a>
+							<a class="comment-link" target="_blank" href="${Link}">${LinkText}</a>
+							<p class="comment-text">{{html Text}}</p>
+							<p class="reply-actions">
+								<span class="time-ago">${TimeAgo}</span>
+								{{if User.name == CurrentUser }}
+								    <input type="button" id="${Id}" value="" class="button-delete" />
+								{{/if}}
+							</p>
+						</li>
+					{{/each}}														
+				</ul>
+				{{if Replies.length > 1 }}
+				    <span class="reply-toggler">
+					    <span class="collapsed"></span>							
+				    </span>
+				{{/if}}					
+			{{/if}}			
+		</div>				
+	</li>
+</script>
+    </body>
+</html>

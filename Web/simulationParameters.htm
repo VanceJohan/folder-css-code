@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <title>Simulation Parameters</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+            <link rel="Stylesheet" href="css/jquery-ui-timepicker-addon.css" >
+            <link rel="Stylesheet" href="css/SimulationParameters.css" type="text/css" >
+
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.standalone.css" type="text/css" >
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.themeroller.css" type="text/css" >
+        </head>
+    <body>
+        <div class="loading"></div>
+        <div id="mainDiv">
+            
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-parameters-elementParametersEditor-Template'  }">Simulation Parameters</div>
+        </div>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+             if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <!-- knockout -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.min.js" type="text/javascript"></script>
+        
+        <!-- jquery.class / plugins / widgets -->
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.widgets.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.class.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- knockout core simulation -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- jquery on ready -->
+        <script src="js/bizagi/dist/core.by.page/jquery.common.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.by.page/jquery.simulation.parameters.min.js" type="text/javascript"></script>
+    <script id="bizagi-pm-bpsim-parameters-elementParametersEditor-Template" type="text/x-jquery-tmpl">
+        <div data-bind="template: { name: 'bizagi-pm-bpsim-parameters-parametersGroupsEditor-Template', data: allParameters, afterRender: jqueryparametersGroupsEditor }" class="biz-ui-elementParametersEditor">
+        </div>
+    </script>
+
+    <script id="bizagi-pm-bpsim-parameters-parametersGroupsEditor-Template" type="text/x-jquery-tmpl">
+        <!--ko if:groups().length > 1-->
+            <h3 class="biz-ui-header" data-bind="text: allHeaderControlText"></h3>
+            <div class="biz-ui-container-groups ui-corner-bottom">
+                <div>
+                    <div class="biz-ui-groups biz-ui-accordion">
+                    <!-- ko foreach: groups -->
+                            <h3 class="biz-ui-title"><!--ko text: displayName--><!--/ko--></h3>
+                            <div data-bind="attr: { id: 'tab-' + groupInternalName }" >
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-parameters-parametersGroupItemEditor-Template' }"></div>
+                            </div>
+                    <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+        <!-- /ko -->
+        <!--ko if:groups().length === 1-->
+                <div>
+                    <!-- ko foreach: groups -->
+                        <h3 class="biz-ui-header"><!--ko text: displayName--><!--/ko--></h3>
+                        <div data-bind="attr: { id: 'tab-' + groupInternalName }" class="biz-ui-container-groups ui-accordion-content ui-widget-content ui-corner-bottom">
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-parameters-parametersGroupItemEditor-Template' }"></div>
+                        </div>
+                    <!-- /ko -->
+                </div>
+        <!-- /ko -->
+            <!-- ko if: showButtons -->
+                <hr class="biz-ui-divider" />
+                <div class="cf biz-ui-text-ar biz-ui-buttons">
+                    <button class="biz-ui-button biz-ui-action-button" data-bind='setAcceptClickEvent:{}, text:okButtontext '></button>
+                    <button class="biz-ui-button biz-ui-action-button" data-bind='setCancelClickEvent:{}, text:cancelButtontext'></button>
+                </div>
+            <!-- /ko -->
+    </script>
+
+    <script id="bizagi-pm-bpsim-parameters-parametersGroupItemEditor-Template" type="text/x-jquery-tmpl">        
+        <div data-bind="template: { name: 'bizagi-pm-bpsim-parameters-parametersListEditor-Template', data: parameters }" class="biz-ui-list-editor">
+        </div>
+    </script>
+
+    <script id="bizagi-pm-bpsim-parameters-parametersListEditor-Template" type="text/x-jquery-tmpl">
+        <div data-bind='visible: parametersItems().length > 0'>
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-parameters-parameterEditor-Template', foreach: parametersItems }">
+            </div>
+        </div>
+    </script>
+
+<script id="bizagi-pm-bpsim-parameters-parameterEditor-Template" type="text/x-jquery-tmpl">
+	<div class="cf biz-ui-parameter-editor">
+    	<div class="biz-ui-label biz-ui-vertical">
+    		<span class="properties-texts" data-bind='text: displayName'></span>
+    		<i class="biz-ui-icon-help" data-bind="attr: {title: helpText }"></i>
+    	</div>
+	    <div data-bind="template: { name: valueTemplateName, data: valueTemplateViewModel }" class="biz-ui-fl biz-ui-control biz-ui-vertical"></div>
+	    <a data-bind="template: { name: 'bizagi-pm-bpsim-values-parameterTypeEditor-Template', data: parameterType }, jQueryParameterEditor: { data: parameterType, type : dataType }" class="biz-ui-inline biz-ui-bg-buttons biz-ui-button"></a>
+	</div>
+</script>
+
+    <script id="bizagi-pm-bpsim-values-parameterTypeEditor-Template" type="text/x-jquery-tmpl">
+        <i data-bind="click: changeTypeHandler" class="biz-ui-icon-configType"></i>
+        <span data-bind='visible: false, text: $data.dataType'></span>
+    </script>
+
+<script id="bizagi-pm-bpsim-values-parameterTypeSelector-Template" type="text/x-jquery-tmpl">
+    <div class="parameter-container biz-ui-elementParametersEditor">
+        <h3 class="biz-ui-header" data-bind="text: typeSelectorTitleText"></h3>
+        <div class="parameter-filter-container"> 
+            <ul class="parameter-filter" data-bind="template: { name: 'bizagi-pm-bpsim-values-parameterTypeSelectorGroupFilter-Template' }"></ul>
+        </div>
+
+        <div class="cf parameter-type-container" data-bind="template: { name: 'bizagi-pm-bpsim-values-parameterTypeSelectorGroup-Template', foreach: parameterTypes }"></div>
+
+        <hr class="biz-ui-divider" />
+        <div class="cf biz-ui-text-ar biz-ui-buttons">
+            <button class="biz-ui-button biz-ui-action-button" data-bind='acceptClickEvent:{}, text: okButtontext'></button>
+            <button class="biz-ui-button biz-ui-action-button" data-bind='cancelClickEvent:{}, text: cancelButtontext'></button>     
+        </div>
+    </div>
+</script>
+
+<script id="bizagi-pm-bpsim-values-parameterTypeSelectorItem-Template" type="text/x-jquery-tmpl">
+    <div class="parameter-group">
+        <div class="parameter-wrapper" data-bind="css: $data.itemType, event: { dblclick: acceptSelection }">
+            <h4 class="parameter-caption" data-bind="text: itemName"></h4>
+            <label class="parameter-control">
+                <span class="parameter-content">
+	                <input class="parameter-input" name="radioSelector" type="radio" data-bind="value: $data.itemType, checked: selectedDataType, jQueryParameterTypeSelectorItem:{}, lastValue: $data.lastValue, type: $data.itemType" />
+	                <span class="parameter-title" data-bind="text: itemName"></span>
+	                <span class="parameter-description" data-bind="jQueryParameterTypeSelectorItemTruncate: { description: $data.itemDescription }"></span>
+                </span>
+            </label>
+        </div>
+    </div> 
+</script>
+<script id="bizagi-pm-bpsim-values-parameterTypeSelectorGroup-Template" type="text/x-jquery-tmpl">
+    <div class="parameter-type" data-bind="css: $data.groupId, template: { name: 'bizagi-pm-bpsim-values-parameterTypeSelectorItem-Template', foreach: $data.items }"></div>
+</script>
+
+    <script id="bizagi-pm-bpsim-values-resultRequestEditor-Template" type="text/x-jquery-tmpl">
+        <select multiple="multiple" data-bind="dropdownchecklist: allResults, options: allResults, optionsText: 'display', selectedOptions: selectedResults"></select>
+    </script>
+
+    <script id="bizagi-pm-bpsim-values-numericValueEditor-Template" type="text/x-jquery-tmpl">
+        <div data-bind="template: { name: 'bizagi-pm-bpsim-common-integerNumberControl-Template', data: integerValue }"></div>
+    </script>
+<script id="bizagi-pm-bpsim-values-stringValueEditor-Template" type="text/x-jquery-tmpl">
+		<input data-bind="value: simpleValue, valueUpdate: 'afterkeydown'" class="biz-ui-input-text"></input>
+</script>
+<script id="bizagi-pm-bpsim-values-durationValueEditor-Template" type="text/x-jquery-tmpl">
+		<div>
+            <div class="biz-ui-collection-inputs biz-ui-duration">
+            	<div class="biz-ui-collection">
+            		<input type="text" size="1" maxlength="3" data-bind="value: days, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" /><input type="text" size="1" maxlength="2" data-bind="value: hours, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" /><input type="text" size="1" maxlength="2" data-bind="value: minutes, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" /><input type="text" size="1" maxlength="2" data-bind="value: seconds, valueUpdate: 'afterkeydown', focus: {}" class="biz-ui-input-text biz-ui-number" />
+            	</div>
+            	<div class="biz-ui-collection biz-ui-absolute">
+            		<span class="biz-ui-sub-label" data-bind="text: daysText"></span><span class="biz-ui-sub-label" data-bind="text: hoursText"></span><span class="biz-ui-sub-label" data-bind="text: minutesText"></span><span class="biz-ui-sub-label" data-bind="text: secondsText"></span>
+            	</div>
+            </div>
+        </div>
+</script>
+ <script id="bizagi-pm-bpsim-values-booleanValueEditor-Template"  type="text/x-jquery-tmpl">
+        <div><label><input type="radio" value="true" data-bind="checked: simpleValue, name: internalName" /> <!--ko text: trueCaption--><!--/ko--></label></div>
+        <div><label><input type="radio" value="false" data-bind="checked: simpleValue, name: internalName" /> <!--ko text: falseCaption--><!--/ko--></label></div>
+ </script>
+    <script id="bizagi-pm-bpsim-values-floatingValueEditor-Template" type="text/x-jquery-tmpl">
+        <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: floatingValue}"></div>
+    </script>
+ <script id="bizagi-pm-bpsim-values-dateTimeValueEditor-Template"  type="text/x-jquery-tmpl">
+        <div>
+            <input value="" type="text" readonly="readonly" data-bind="value: selectedDate, dateTimeSetControl: {}" class="biz-ui-input-text"></input>
+        </div>
+</script>
+    <script id="bizagi-pm-bpsim-values-commonDistributionsValueEditor-Template"  type="text/x-jquery-tmpl">
+        <div>
+            <div class="biz-ui-distributions biz-div-fieldset">
+                <h2 class="properties-texts "><!--ko text: parameterTypeText--><!--/ko--></h2>
+                <!-- ko if: dataType == 'BetaDistribution' || dataType == 'GammaDistribution' || dataType == 'WeibullDistribution' -->
+                    <table>
+                    <tr></tr>
+                    <tr>
+                        <td>
+                            <span class="properties-texts" data-bind="text: shapeText"></span>
+                        </td>
+                        <td>
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="properties-texts" data-bind="text: scaleText"></span>
+                        </td>
+                        <td>
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value2, afterRender: setSpinner }"></div>
+                        </td>
+                    </tr>
+                    </table>
+                <!-- /ko -->
+
+                <!-- ko if: dataType == 'BinomialDistribution' -->
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: probabilityText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: trialsText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-integerNumberControl-Template', data: value2, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                    </table>
+                <!-- /ko -->
+
+                <!-- ko if: dataType == 'ErlangDistribution' -->
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: meanText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>                
+                        <tr>
+                            <td> 
+                                <span class="properties-texts" data-bind="text: kText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-integerNumberControl-Template', data: value2, afterRender: setSpinner }"></div>
+                            </td>
+                        <tr>
+                    </table>
+                <!-- /ko -->
+
+                <!-- ko if: dataType == 'LogNormalDistribution' || dataType == 'NormalDistribution' -->
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: meanText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: standardDeviationText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value2, afterRender: setSpinner }"></div>
+                            <td>
+                        </tr>
+                    </table>
+                <!-- /ko -->
+
+                <!-- ko if: dataType == 'UniformDistribution' -->
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: minText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                            </td>
+                        <tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: maxText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value2, afterRender: setSpinner }"></div>
+                            </td>
+                        <tr>
+                    </table>
+                <!-- /ko -->
+            
+                <!-- ko if: dataType == 'NegativeExponentialDistribution' || dataType == 'PoissonDistribution' -->
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: meanText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                            </td>
+                        <tr>
+                    </table>
+                <!-- /ko -->
+
+                <!-- ko if: dataType == 'TriangularDistribution' -->
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: mostLikelyText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: minText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value2, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: maxText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value3, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                    </table>
+                <!-- /ko -->
+
+                <!-- ko if: dataType == 'TruncatedNormalDistribution' -->
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: meanText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value1, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: standardDeviationText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value2, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: minText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value3, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="properties-texts" data-bind="text: maxText"></span>
+                            </td>
+                            <td>
+                                <div data-bind="template: { name: 'bizagi-pm-bpsim-common-floatingNumberControl-Template', data: value4, afterRender: setSpinner }"></div>
+                            </td>
+                        </tr>
+                    </table>
+                <!-- /ko -->
+            </div>
+        </div>
+    </script>
+<script id="bizagi-pm-bpsim-values-enumValueEditor-Template" type="text/x-jquery-tmpl">
+    <tr>
+        <td>
+            <div style="float:left" data-bind="template: { name: valueTemplateName, data: valueTemplateViewModel }"></div>
+            <div><a class="button-delete-element" data-bind='click: removeItem, title: removeText'></a></div>
+        </td>
+    </tr>
+</script>
+<script id="bizagi-pm-bpsim-values-enumValuesContainer-Template" type="text/x-jquery-tmpl">
+    <div>
+        <fieldset>
+            <legend class="properties-texts"><!--ko text: enumerationElementsText--><!--/ko--></legend>
+            <table>
+                <tbody data-bind="template: { name: 'bizagi-pm-bpsim-values-enumValueEditor-Template', foreach: itemsTemplatesViewModels }">
+                </tbody>
+                <tr>
+                    <th>
+                        <div class="biz-ui-fl">
+                            <a class="button-addElement" data-bind='click: addNewItem, title: addText'></a>
+                        </div>
+                        <div class="biz-ui-fl">
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-values-parameterTypeEditor-Template', data: enumItemsDataTypeViewModel }"></div>
+                        </div>
+                    </th>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+</script>
+<script id="bizagi-pm-bpsim-values-functionsValueEditor-Template" type="text/x-jquery-tmpl">
+    <table style="border-collapse:collapse;">
+        <tbody>
+            <tr>
+                <td style="padding-bottom: 1em;">
+                    <div data-bind="template: { name: 'bizagi-pm-bpsim-values-functionsRadioButtons-Template', data: functions }"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="biz-ui-multiple-resource" data-bind="template: { name: 'bizagi-pm-bpsim-values-multipleResourceSelector-Template', data: valuesViewModel }"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+<script id="bizagi-pm-bpsim-values-multipleResourceSelector-Template" type="text/x-jquery-tmpl">
+    <table>
+        <tbody data-bind="foreach: resources">
+            <tr data-bind="template: { name: 'bizagi-pm-bpsim-values-multipleResourceSelectorItem-Template' }"></tr>
+        </tbody>
+    </table>
+</script>
+<script id="bizagi-pm-bpsim-values-multipleResourceSelectorItem-Template" type="text/x-jquery-tmpl">
+    <td>
+        <label>
+        	<input class="biz-ui-type" type="checkbox" data-bind="checked: selected" />
+        	<span class="biz-ui-label-text" data-bind="text: name"></span>
+        </label>
+    </td>
+    <td>
+        <div class="biz-ui-input-wrapper" data-bind="css: selectedStatus, enable: selected, template: { name: 'bizagi-pm-bpsim-common-integerNumberControl-Template', data: integerData }"></div>
+    </td>
+</script>
+<script id="bizagi-pm-bpsim-values-functionsRadioButtons-Template" type="text/x-jquery-tmpl">
+    <div data-bind="foreach: functions">
+        <label>
+        	<input class="biz-ui-type" type="radio" name="functionsRadio" data-bind="value: type, checked: functionName" />
+        	<span  class="biz-ui-label-text" data-bind="text: displayText"></span>
+        </label>
+    </div>
+</script>
+<script id="bizagi-pm-bpsim-calendars-calendarValueEditor-Template"  type="text/x-jquery-tmpl">
+
+    <fieldset class="biz-ui-attributescontainer">
+        <legend data-bind='text: calendarLegendText'></legend>
+        <div class="biz-ui-attributes-container">         
+            <div class="biz-ui-calendar-row">
+                <div class="biz-ui-calendar-left-cell biz-ui-label biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: displayNameText'></span>
+                </div>
+                <div class="calendar-right-cell biz-ui-inline">
+                    <input class="biz-ui-input-text biz-ui-input-calendar-name" type="text" data-bind="value: calendarDisplayName, valueUpdate: 'afterkeydown'" />
+                </div>
+            </div>
+            <div class="biz-ui-calendar-table">
+                <div class="biz-ui-calendar-row">
+                    <div class="biz-ui-calendar-left-cell biz-ui-label  biz-ui-inline">
+                        <span class="properties-texts" data-bind='text: startTime'></span>
+                    </div>
+                    <div class="calendar-right-cell  biz-ui-inline">
+                        <input class="biz-ui-input-text-large" type="text" data-bind="value: selectedStartTime, valueUpdate: 'afterkeydown', enterkey:{}, timeSpinner:{}" >
+                        </input>                   
+                    </div>
+                 </div>
+                 <div class="biz-ui-calendar-row">
+                    <div class="biz-ui-calendar-left-cell biz-ui-label  biz-ui-inline">
+                        <span class="properties-texts" data-bind='text: intervalDurationText'></span>
+                    </div>
+                    <div class="calendar-right-cell biz-ui-inline biz-ui-select-large">
+                        <select class="biz-ui-select" data-bind="options: rageHours, optionsValue: function(item) { return item.value }, optionsText: function(item) { return item.label },  value: selectDuration" class="biz-ui-input-text-large"></select>
+                        </input>
+                    </div>
+                 </div>
+            </div>
+        </div>                        
+    </fieldset>
+    <fieldset class="biz-ui-attributescontainer">
+        <legend data-bind='text: recurrenceText'></legend>
+        <div class="biz-ui-attributes-container"> 
+            <table class="biz-ui-calendar-table">
+                <tr>
+                    <td class="calendar-right-cell">
+                        <div class="biz-ui-fl biz-ui-recurrence-type">
+                            <div data-bind="foreach: recurrenceTypes">
+                                <div class="biz-ui-calendar-row">
+                                    <label class="biz-ui-calendar-control">
+                                        <input type="radio" name="recurrenceTypeCombo" data-bind="value:id, checked: $parent.recurrenceType" />
+                                        <span data-bind="text: name"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="biz-ui-fl biz-divider-vertical"></div>
+                        <div class="biz-ui-recurrence-editor">
+                        <!-- ko if: recurrenceType() == "Daily" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-dailyRecurrenceEditor-Template', data: dailyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: recurrenceType() == "Weekly" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-weeklyRecurrenceEditor-Template', data: weeklyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: recurrenceType() == "Monthly" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-monthlyRecurrenceEditor-Template', data: monthlyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: recurrenceType() == "Yearly" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-yearlyRecurrenceEditor-Template', data: yearlyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        </div>
+                    </td>
+                </tr>                
+            </table>
+        </div>
+    </fieldset>
+    <fieldset class="biz-ui-attributescontainer">
+        <legend data-bind="text:rangeText"></legend>
+        <div class="biz-ui-attributes-container">
+            <ul class="biz-ui-list biz-ui-inline">
+                <li>
+                    <label class="biz-ui-label-block">
+                        <span class="properties-texts" data-bind='text: intervalStartText'></span>
+                        <input class="biz-ui-input-text-calendar" value="" type="text" data-bind="value: selectedStartDate,valueUpdate: 'afterkeydown', enterkey:{}, calendarDatePicker: {}" />
+                    </label>
+                </li>
+            </ul>
+            <ul class="biz-ui-list biz-ui-inline" data-bind="template: { name: 'bizagi-pm-bpsim-calendars-recurrenceRangeEditor-Template', data: recurrenceRangeViewModel }"></ul>
+        </div>                         
+    </fieldset>
+
+    <!-- test-->
+    <div class="log biz-ui-hide">
+        selectedStartDate
+        <span data-bind="text:selectedStartDate"></span>
+        <br>
+        startDateTime
+        <span data-bind="text: startDateTime"></span>
+        <br>
+        selectedStartFullDate
+        <span data-bind="text: selectedStartFullDate"></span>
+        <br>
+        selectedEndDate
+        <span data-bind="text: selectedEndDate"></span>
+        <br>
+        selectDuration
+        <span data-bind="text: selectDuration"></span>
+    </div>
+
+</script>
+<script id="bizagi-pm-bpsim-calendars-calendarsSelectionList-Template"  type="text/x-jquery-tmpl">
+    <div>
+        <ol id="selectable" data-bind="foreach: calendars">
+            <li class="ui-widget-content properties-texts" data-bind="attr: { id: calendarId}, calendarsSelectionListClickBinding: {}">
+            	<i class="biz-ui-icon-calendar"></i>
+            	<span class="biz-ui-label-text" data-bind="text: displayName"></span>
+            </li>
+        </ol>
+    </div>
+</script>
+ <script id="bizagi-pm-bpsim-calendars-calendarsContainer-Template"  type="text/x-jquery-tmpl">
+   
+    <div class="cf calendar-wrapper">
+        <div class="biz-ui-selectable-item-container biz-ui-fl">
+            <div class="biz-ui-selectableitemcontainer">
+                <!-- ko if: calendars().length != 0 -->
+                    <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-calendarsSelectionList-Template', data: calendarsListViewModel }" class="biz-ui-calendarsSelectionList"></div>
+                <!-- /ko -->
+            </div>
+            <div class="biz-ui-button-container biz-ui-clear">
+                <a href="#" class="biz-ui-button" data-bind='calendarsContainerSetAddClickEvent:{}'>
+                    <i class="biz-ui-icon-addcalendar"></i>
+                    <span class="biz-ui-label-text" data-bind="text: add"></span>
+                </a>
+                <a href="#" class="biz-ui-link" data-bind='click: removeCalendar, text: remove'></a> 
+            </div>            
+        </div>      
+        <div class="biz-ui-calendarValueEditorContainer">
+            <!-- ko if: calendars().length != 0 -->
+             <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-calendarValueEditor-Template', data: selectedCalendarViewModel, afterRender: jQuerySelectStyle }" class="biz-ui-calendarValueEditor"></div>
+             <!-- /ko -->
+
+             <!-- ko if: calendars().length === 0 -->
+                <div data-bind="text: emptyCalendars" class="biz-ui-messages-empty alert alert-block"></div>
+             <!-- /ko -->
+        </div>                 
+    </div>
+    
+</script>
+ <script id="bizagi-pm-bpsim-common-floatingNumberControl-Template"  type="text/x-jquery-tmpl">
+        <input type="text" data-bind="value: floatingNumber, attr: {separator: decimalSeparator }, floatingNumberControlJquerySpinner: {}" class="biz-ui-input-text biz-ui-number"></input>
+</script>
+<script id="bizagi-pm-bpsim-common-integerNumberControl-Template" type="text/x-jquery-tmpl">
+    <input size="8" data-bind="value: integerNumber, valueUpdate: 'afterkeydown', event: { keypress: onkeypress }, visible: isVisible, jQueryIntegerNumberControl:{plugin:'spinner', config:{min: 0}}" class="biz-ui-input-text biz-ui-number" type="text" name="numericText"></input>
+</script>
+    <script id="bizagi-koBindings-jqDialog-Template" type="text/x-jquery-tmpl">
+    <!-- ko if: $data.isDialogVisible --> 
+    
+    <div id="details" data-bind="jqDialog: { autoOpen: false, resizable: true, modal: true, close: $data.isDialogVisible }, openDialog: $data.isDialogVisible"> 
+
+    <!-- ko if: $data.contentTemplateName --> 
+
+        <div data-bind="template: { name: contentTemplateName, data: contentTemplateViewModel }" > 
+            </div>
+
+    <!-- /ko -->
+
+    </div>
+    <!-- /ko -->
+   
+    </script>
+
+    </body>
+</html>

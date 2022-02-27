@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <title>Calendars Editor View</title>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+            <link rel="stylesheet" href="css/jquery-ui.css" >
+            <link rel="Stylesheet" href="css/jquery-ui-timepicker-addon.css" >
+            <link rel="Stylesheet" href="css/SimulationParameters.css" type="text/css" >
+
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.standalone.css" type="text/css" >
+            <link rel="Stylesheet" href="css/ui.dropdownchecklist.themeroller.css" type="text/css" >
+        </head>
+    <body>
+        <div class="loading"></div>
+        <div id="mainDiv">
+            
+            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-calendarsContainer-Template'  }">Calendars Editor View</div>
+        </div>
+        
+        <!-- IE8 detect -->
+        <script type="text/javascript" src="js/bizagi/dist/ie8/app.ie8detect.js"></script> 
+         
+         <!-- jquery Scripts -->
+        <script id="scriptInLine">
+             if (IsIE8Browser()) {
+                var jQueryScriptForIE8 = document.createElement('script');
+                jQueryScriptForIE8.id = 'jquery-1.8.3';
+                jQueryScriptForIE8.src = 'js/bizagi/dist/core.jquery/ie8/app.jquery.core.min.js';
+                document.write(jQueryScriptForIE8.outerHTML);
+            }else{
+                var jQueryScript = document.createElement('script');
+                jQueryScript.id = 'jquery-2.1.0';
+                jQueryScript.src = 'js/bizagi/dist/core.jquery/app.jquery.core.min.js';
+                document.write(jQueryScript.outerHTML);
+            }
+        </script>
+
+        <!-- knockout -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.min.js" type="text/javascript"></script>
+        
+        <!-- jquery.class / plugins / widgets -->
+        <script src="js/bizagi/dist/core.libraries/app.plugins.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.widgets.process.modeler.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.libraries/app.class.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- knockout core simulation -->
+        <script src="js/bizagi/dist/core.ko/app.core.ko.process.modeler.min.js" type="text/javascript"></script>
+
+        <!-- jquery on ready -->
+        <script src="js/bizagi/dist/core.by.page/jquery.common.min.js" type="text/javascript"></script>
+        <script src="js/bizagi/dist/core.by.page/jquery.calendars.editor.view.min.js" type="text/javascript"></script>
+<script id="bizagi-pm-bpsim-calendars-calendarValueEditor-Template"  type="text/x-jquery-tmpl">
+
+    <fieldset class="biz-ui-attributescontainer">
+        <legend data-bind='text: calendarLegendText'></legend>
+        <div class="biz-ui-attributes-container">         
+            <div class="biz-ui-calendar-row">
+                <div class="biz-ui-calendar-left-cell biz-ui-label biz-ui-inline">
+                    <span class="properties-texts" data-bind='text: displayNameText'></span>
+                </div>
+                <div class="calendar-right-cell biz-ui-inline">
+                    <input class="biz-ui-input-text biz-ui-input-calendar-name" type="text" data-bind="value: calendarDisplayName, valueUpdate: 'afterkeydown'" />
+                </div>
+            </div>
+            <div class="biz-ui-calendar-table">
+                <div class="biz-ui-calendar-row">
+                    <div class="biz-ui-calendar-left-cell biz-ui-label  biz-ui-inline">
+                        <span class="properties-texts" data-bind='text: startTime'></span>
+                    </div>
+                    <div class="calendar-right-cell  biz-ui-inline">
+                        <input class="biz-ui-input-text-large" type="text" data-bind="value: selectedStartTime, valueUpdate: 'afterkeydown', enterkey:{}, timeSpinner:{}" >
+                        </input>                   
+                    </div>
+                 </div>
+                 <div class="biz-ui-calendar-row">
+                    <div class="biz-ui-calendar-left-cell biz-ui-label  biz-ui-inline">
+                        <span class="properties-texts" data-bind='text: intervalDurationText'></span>
+                    </div>
+                    <div class="calendar-right-cell biz-ui-inline biz-ui-select-large">
+                        <select class="biz-ui-select" data-bind="options: rageHours, optionsValue: function(item) { return item.value }, optionsText: function(item) { return item.label },  value: selectDuration" class="biz-ui-input-text-large"></select>
+                        </input>
+                    </div>
+                 </div>
+            </div>
+        </div>                        
+    </fieldset>
+    <fieldset class="biz-ui-attributescontainer">
+        <legend data-bind='text: recurrenceText'></legend>
+        <div class="biz-ui-attributes-container"> 
+            <table class="biz-ui-calendar-table">
+                <tr>
+                    <td class="calendar-right-cell">
+                        <div class="biz-ui-fl biz-ui-recurrence-type">
+                            <div data-bind="foreach: recurrenceTypes">
+                                <div class="biz-ui-calendar-row">
+                                    <label class="biz-ui-calendar-control">
+                                        <input type="radio" name="recurrenceTypeCombo" data-bind="value:id, checked: $parent.recurrenceType" />
+                                        <span data-bind="text: name"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="biz-ui-fl biz-divider-vertical"></div>
+                        <div class="biz-ui-recurrence-editor">
+                        <!-- ko if: recurrenceType() == "Daily" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-dailyRecurrenceEditor-Template', data: dailyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: recurrenceType() == "Weekly" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-weeklyRecurrenceEditor-Template', data: weeklyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: recurrenceType() == "Monthly" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-monthlyRecurrenceEditor-Template', data: monthlyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        <!-- ko if: recurrenceType() == "Yearly" -->
+                            <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-yearlyRecurrenceEditor-Template', data: yearlyRecurrenceViewModel, afterRender: jQuerySelectStyle }"></div>
+                        <!-- /ko -->
+                        </div>
+                    </td>
+                </tr>                
+            </table>
+        </div>
+    </fieldset>
+    <fieldset class="biz-ui-attributescontainer">
+        <legend data-bind="text:rangeText"></legend>
+        <div class="biz-ui-attributes-container">
+            <ul class="biz-ui-list biz-ui-inline">
+                <li>
+                    <label class="biz-ui-label-block">
+                        <span class="properties-texts" data-bind='text: intervalStartText'></span>
+                        <input class="biz-ui-input-text-calendar" value="" type="text" data-bind="value: selectedStartDate,valueUpdate: 'afterkeydown', enterkey:{}, calendarDatePicker: {}" />
+                    </label>
+                </li>
+            </ul>
+            <ul class="biz-ui-list biz-ui-inline" data-bind="template: { name: 'bizagi-pm-bpsim-calendars-recurrenceRangeEditor-Template', data: recurrenceRangeViewModel }"></ul>
+        </div>                         
+    </fieldset>
+
+    <!-- test-->
+    <div class="log biz-ui-hide">
+        selectedStartDate
+        <span data-bind="text:selectedStartDate"></span>
+        <br>
+        startDateTime
+        <span data-bind="text: startDateTime"></span>
+        <br>
+        selectedStartFullDate
+        <span data-bind="text: selectedStartFullDate"></span>
+        <br>
+        selectedEndDate
+        <span data-bind="text: selectedEndDate"></span>
+        <br>
+        selectDuration
+        <span data-bind="text: selectDuration"></span>
+    </div>
+
+</script>
+<script id="bizagi-pm-bpsim-calendars-calendarsSelectionList-Template"  type="text/x-jquery-tmpl">
+    <div>
+        <ol id="selectable" data-bind="foreach: calendars">
+            <li class="ui-widget-content properties-texts" data-bind="attr: { id: calendarId}, calendarsSelectionListClickBinding: {}">
+            	<i class="biz-ui-icon-calendar"></i>
+            	<span class="biz-ui-label-text" data-bind="text: displayName"></span>
+            </li>
+        </ol>
+    </div>
+</script>
+ <script id="bizagi-pm-bpsim-calendars-calendarsContainer-Template"  type="text/x-jquery-tmpl">
+   
+    <div class="cf calendar-wrapper">
+        <div class="biz-ui-selectable-item-container biz-ui-fl">
+            <div class="biz-ui-selectableitemcontainer">
+                <!-- ko if: calendars().length != 0 -->
+                    <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-calendarsSelectionList-Template', data: calendarsListViewModel }" class="biz-ui-calendarsSelectionList"></div>
+                <!-- /ko -->
+            </div>
+            <div class="biz-ui-button-container biz-ui-clear">
+                <a href="#" class="biz-ui-button" data-bind='calendarsContainerSetAddClickEvent:{}'>
+                    <i class="biz-ui-icon-addcalendar"></i>
+                    <span class="biz-ui-label-text" data-bind="text: add"></span>
+                </a>
+                <a href="#" class="biz-ui-link" data-bind='click: removeCalendar, text: remove'></a> 
+            </div>            
+        </div>      
+        <div class="biz-ui-calendarValueEditorContainer">
+            <!-- ko if: calendars().length != 0 -->
+             <div data-bind="template: { name: 'bizagi-pm-bpsim-calendars-calendarValueEditor-Template', data: selectedCalendarViewModel, afterRender: jQuerySelectStyle }" class="biz-ui-calendarValueEditor"></div>
+             <!-- /ko -->
+
+             <!-- ko if: calendars().length === 0 -->
+                <div data-bind="text: emptyCalendars" class="biz-ui-messages-empty alert alert-block"></div>
+             <!-- /ko -->
+        </div>                 
+    </div>
+    
+</script>
+<script id="bizagi-pm-bpsim-calendars-dailyRecurrenceEditor-Template"  type="text/x-jquery-tmpl">
+    <div class="biz-ui-calendar-row">
+        <span class="properties-texts" data-bind="text: everyText"></span>
+        <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: days, valueUpdate: 'afterkeydown', event: { keypress: onkeypress, blur: onblur }" />
+        <span class="properties-texts" data-bind="text: daysText"></span>
+    </div>
+</script>
+    <script id="bizagi-pm-bpsim-calendars-weeklyRecurrenceEditor-Template"  type="text/x-jquery-tmpl">
+    <div class="biz-ui-recurrence-container">
+        <div class="biz-ui-calendar-row">
+            <span class="properties-texts" data-bind="text: reccursEveryText"></span>
+            <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: weeks, valueUpdate: 'afterkeydown', event: { keypress: onkeypress, blur: onblur }" />
+            <span class="properties-texts" data-bind="text: weeksOnText"></span>
+        </div>
+        <ul class="biz-ui-list biz-ui-weekly">
+            <ul class="biz-ui-list biz-ui-fl">
+                <li>
+                    <label>
+                        <input type="checkbox" data-bind="checked: sunday" />
+                        <span class="biz-ui-label-text" data-bind="text: sundayText"></span>
+                    </label>
+                </li>            
+                <li>
+                    <label>
+                        <input type="checkbox" data-bind="checked: wednesday" />
+                        <span class="biz-ui-label-text" data-bind="text: wednesdayText"></span>
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" data-bind="checked: saturday" />
+                        <span class="biz-ui-label-text" data-bind="text: saturdayText"></span>
+                    </label>
+                </li>                    
+            </ul>
+            <ul class="biz-ui-list biz-ui-fl">
+                <li>
+                    <label>
+                        <input type="checkbox" data-bind="checked: monday" />
+                        <span class="biz-ui-label-text" data-bind="text: mondayText"></span>
+                    </label>
+                </li>                           
+                <li>
+                    <label>
+                        <input type="checkbox" data-bind="checked: thursday" />
+                        <span class="biz-ui-label-text" data-bind="text: thursdayText"></span>
+                    </label>
+                </li>                   
+            </ul>
+            <ul class="biz-ui-list biz-ui-fl">
+                <li>
+                    <label>
+                        <input type="checkbox" data-bind="checked: tuesday" />
+                        <span class="biz-ui-label-text" data-bind="text: tuesdayText"></span>
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" data-bind="checked: friday" />
+                        <span class="biz-ui-label-text" data-bind="text: fridayText"></span>
+                    </label>
+                </li>                                 
+            </ul>
+        </ul>
+    </div>
+</script>
+    <script id="bizagi-pm-bpsim-calendars-monthlyRecurrenceEditor-Template"  type="text/x-jquery-tmpl">
+    <div class="biz-ui-recurrence-container">
+        <div class="biz-ui-calendar-row">
+            <input class="biz-ui-radio" name="radio1" type="radio" value="True" data-bind="checked: byMothDaySelected" />
+            <span class="properties-texts" data-bind="text: dayText"></span>
+            <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: monthDay, valueUpdate: 'afterkeydown', event: { keypress: onNumericControlkeypress, blur: onNumericMonthDayControlblur }" />
+            <span class="properties-texts" data-bind="text: ofEveryText"></span>
+            <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: months, valueUpdate: 'afterkeydown', event: { keypress: onNumericControlkeypress, blur: onNumericMonthsControlblur }" />
+            <span class="properties-texts" data-bind="text: monthsText"></span>
+        </div>
+        <div class="biz-ui-calendar-row biz-ui-calendar-control">
+            <input class="biz-ui-radio" name="radio1" type="radio" value="False" data-bind="checked: byMothDaySelected" />
+            <span class="properties-texts" data-bind="text: theText"></span>
+            <select class="biz-ui-select" data-bind="options: ordinals, optionsText: 'name', optionsValue: 'id', value: ordinal"></select>
+            <select class="biz-ui-select" data-bind="options: weekDays, optionsText: 'name', optionsValue: 'id', value: weekDay"></select>
+        </div>
+        <div class="biz-ui-calendar-row">
+            <span class="properties-texts properties-texts-first" data-bind="text: ofEveryText"></span>
+            <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: months, valueUpdate: 'afterkeydown', event: { keypress: onNumericControlkeypress, blur: onNumericMonthsControlblur }" />
+            <span class="properties-texts" data-bind="text: monthsText"></span>
+        </div>
+    </div>
+
+</script>
+<script id="bizagi-pm-bpsim-calendars-numericCalendarValue-Template" type="text/x-jquery-tmpl">
+    <input data-bind="value: simpleValue, valueUpdate: 'afterkeydown', event: { keypress: onkeypress }" type="text" maxlength="2" size="1" style="text-align:right; font-family: Segoe UI; font-size: 9pt;"></input>
+</script>
+    <script id="bizagi-pm-bpsim-calendars-yearlyRecurrenceEditor-Template"  type="text/x-jquery-tmpl">
+    <div class="biz-ui-recurrence-container">
+        <div class="biz-ui-calendar-row">
+            <span class="properties-texts" data-bind="text: reccursEveryText"></span>
+            <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: years, valueUpdate: 'afterkeydown', event: { keypress: onNumericControlkeypress, blur: onNumericYearsControlblur}" />
+            <span class="properties-texts" data-bind="text: yearsText"></span>
+        </div>
+        <div class="biz-ui-calendar-row biz-ui-calendar-control">
+            <input type="radio" name="selectDayOfYear" value="BYMONTHDAY" data-bind="checked: selectedMonthRule" />
+            <span class="properties-texts" data-bind="text: onText"></span>
+            <select class="biz-ui-select" data-bind="options: months, optionsText: 'name', optionsValue: 'id', value: byMonthDayMonthNumber"></select>
+            <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: monthDay, valueUpdate: 'afterkeydown', event: { keypress: onNumericControlkeypress, blur: onNumericMonthsControlblur}" />                       
+        </div>
+        <div class="biz-ui-calendar-row biz-ui-calendar-control">
+            <input type="radio" name="selectDayOfYear" value="BYDAY" data-bind="checked: selectedMonthRule" />
+            <span class="properties-texts" data-bind="text: onTheText"></span>
+            <select class="biz-ui-select" data-bind="options: ordinals, optionsText: 'name', optionsValue: 'id', value: selectedOrdinal"></select>
+            <select class="biz-ui-select" data-bind="options: weekDays, optionsText: 'name', optionsValue: 'id', value: selectedWeekDay"></select>
+            <span  class="properties-texts" data-bind="text: ofText"></span>
+            <select class="biz-ui-select" data-bind="options: months, optionsText: 'name', optionsValue: 'id', value: byDayMonthNumber"></select>
+        </div>
+    </div>
+</script>
+<script id="bizagi-pm-bpsim-calendars-recurrenceRangeEditor-Template"  type="text/x-jquery-tmpl">
+    <li>
+        <label>
+            <input class="biz-ui-radio" name="rangeRadio" type="radio" value="Forever" data-bind="checked: rangeTypeSelected" />
+            <span class="properties-texts" data-bind="text: noEndDateText"></span>
+        </label>
+    </li>
+    <li>
+        <label>
+            <input class="biz-ui-radio" name="rangeRadio" type="radio" value="Ocurrences" data-bind="checked: rangeTypeSelected" />
+            <span class="properties-texts" data-bind="text: endAfterText"></span>
+        </label>
+        <input class="biz-ui-input-text biz-ui-imput-small" type="text" size="1" data-bind="value: occurrences, valueUpdate: 'afterkeydown', event: { keypress: onkeypress, blur: onblur }" />
+        <span class="properties-texts" data-bind="text: occurrencesText"></span>        
+    </li>
+    <li>
+        <label>
+            <input class="biz-ui-radio" name="rangeRadio" type="radio" value="Until" data-bind="checked: rangeTypeSelected" />
+            <span class="properties-texts" data-bind="text: endByText"></span>
+        </label>
+        <input class="biz-ui-input-text-calendar" value="" type="text" data-bind="value: untilDateTimeViewModel, valueUpdate: 'afterkeydown', enterkey:{}, calendarDatePicker: {}" />
+             
+    </li>
+</script>
+ <script id="bizagi-pm-bpsim-common-dateTimeControl-Template"  type="text/x-jquery-tmpl">
+        <input class="biz-ui-input-text" type="text" readonly="readonly" data-bind="value: selectedDateTime, dateTimeSetControl: {}" />
+</script>
+    </body>
+</html>
